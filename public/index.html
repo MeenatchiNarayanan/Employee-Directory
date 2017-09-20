@@ -1,0 +1,143 @@
+<html>
+
+<head>
+    <title>Employee Directory</title>
+    <link rel="icon" href="favicon.ico" type="ico" sizes="16x16">
+    <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet"></link>
+    <link href="stylesheets/style.css" rel="stylesheet"></link>
+    <style>
+
+    </style>
+</head>
+
+<body ng-app="directoryApp" ng-controller="directoryControl as EmployeeApp">
+    <div class="container" ng-cloak>
+        <div class="jumbotron text-center BackGroundBlue">
+            <h3>Employee Directory</h3>
+        </div>
+        <div ng-show="!EmployeeApp.empEdit" class="container" ng-click="EmployeeApp.empEdit=true">
+            <div class="create">
+                Create New Employee
+            </div>
+        </div>
+        <div ng-show="EmployeeApp.empEdit">
+            <form class="form-group" name="employeeForm">
+                <div>
+                    <div class="inputContainer">
+                        <div class="lblField">Name</div>
+                        <div class="ipField">
+                            <input class="form-control" name="empName" type="text" ng-model="EmployeeApp.emp.Name" required placeholder="Name">
+                            <div ng-messages="employeeForm.empName.$err" ng-if="employeeForm.empName.$touched" class="msgAlert">
+                                <div ng-message="required">Mandatory Field</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ipContainer">
+                        <div class="lblField">Email</div>
+                        <div class="ipField">
+                            <input class="form-control" name="empEmail" type="email" ng-model="EmployeeApp.emp.Email" required placeholder="abc@abc.com" \ ng-pattern="/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/">
+                            <div ng-messages="employeeForm.empEmail.$err" ng-if="employeeForm.empEmail.$touched" class="msgAlert">
+                                <div ng-message="required">Mandatory Field</div>
+                                <div ng-message="pattern">Invalid Email</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ipContainer">
+                        <div class="lblField">DOB</div>
+                        <div class="ipField">
+                            <input class="form-control" name="empDOB" type="text" ng-model="EmployeeApp.emp.DOB" required placeholder="YYYY/mm/dd" uib-datepicker-popup="yyyy/MMM/dd" ng-click="EmployeeApp.calendar()" is-open="EmployeeApp.toggleCalendar" ng-readonly="true" ng-change="EmployeeApp.calculateAge()"
+                                datepicker-options="{formatYear :'yyyy', formatMonth :'MMM' ,formatDay :'dd'}" />
+                            <div ng-messages="employeeForm.empDOB.$err" ng-if="employeeForm.empDOB.$touched" class="msgAlert">
+                                <div ng-message="required">Mandatory Field</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ipContainer">
+                        <div class="lblField">Gender</div>
+                        <div class="ipField">
+                            <input type="radio" name="empGender" value="Male" ng-model="EmployeeApp.emp.Gender" required />M
+                            <input type="radio" name="empGender" value="Female" ng-model="EmployeeApp.emp.Gender" required />F
+                            <div ng-messages="employeeForm.empGender.$err" ng-if="employeeForm.empGender.$touched" class="msgAlert">
+                                <div ng-message="required">Mandatory Field</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ipContainer">
+                        <div class="lblField">Department</div>
+                        <div class="ipField">
+                            <input class="form-control" name="empDpt" type="text" ng-model="EmployeeApp.emp.Department" required />
+                            <div ng-messages="employeeForm.empDpt.$err" ng-if="employeeForm.empDpt.$touched" class="msgAlert">
+                                <div ng-message="required">Mandatory Field</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ipContainer">
+                        <div class="ipBtn">
+                            <input type="submit" class="btn btn-success" value="Add" ng-disabled="employeeForm.$invalid" ng-if="!EmployeeApp.isUpdateVisible" title="{{employeeForm.$invalid?'Please fill all the fields':''}}" ng-click="EmployeeApp.empEdit=false;EmployeeApp.AddEmployee(EmployeeApp.emp)" />
+                        </div>
+                        <div class="ipBtn">
+                            <input type="submit" class="btn btn-success" value="Update" ng-disabled="employeeForm.$invalid" ng-if="EmployeeApp.isUpdateVisible" title="{{employeeForm.$invalid?'Please fill all the fields':''}}" ng-click="EmployeeApp.empEdit=false;EmployeeApp.UpdateEmployee(EmployeeApp.emp)"
+                            />
+                        </div>
+                        <div class="ipBtn">
+                            <input type="button" class="btn btn-success" value="Cancel" ng-click="EmployeeApp.empEdit=false;EmployeeApp.reset()" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div ng-show="!EmployeeApp.empEdit">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>DOB</th>
+                            <th>Gender</th>
+                            <th>Age</th>
+                            <th>Department</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-if="!EmployeeApp.loading && EmployeeApp.empDetails.length > 0" ng-repeat="row in EmployeeApp.empDetails track by row.email">
+                            <td>{{row.name}}</td>
+                            <td>{{row.email}}</td>
+                            <td>{{row.dob | date : "yyyy/MMM/dd"}}</td>
+                            <td>{{row.gender}}</td>
+                            <td>{{row.age}}</td>
+                            <td>{{row.department}}</td>
+                            <td>
+                                <input type="button" class="btn btn-sm btn-warning" value="Update" ng-click="EmployeeApp.empEdit=true;EmployeeApp.PopulateData(row);" />
+                            </td>
+                            <td>
+                                <input type="button" class="btn btn-sm btn-danger" value="Delete" ng-click="EmployeeApp.DeleteEmployee(row)" />
+                            </td>
+                        </tr>
+                        <tr ng-if="EmployeeApp.loading">
+                            <td colspan="12" class="loadingAnimation">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                {{EmployeeApp.err}}
+            </div>
+        </div>
+    </div>
+
+    <!-- scripts -->
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="lib/angular.min.js"></script>
+    <script src="lib/angular-messages.min.js"></script>
+    <script src="lib/ui-bootstrap-tpls-2.4.0.min.js"></script>
+    <script src="javascripts/module.js"></script>
+    <script src="javascripts/controller.js"></script>
+    <script src="javascripts/service.js"></script>
+
+</body>
+
+</html>

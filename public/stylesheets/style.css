@@ -1,0 +1,66 @@
+        .create {
+            margin-bottom: 10px;
+            float: right;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            color: white;
+            background-color: #41C8D1;
+        }
+        
+        .msgAlert {
+            font-size: 14px;
+            color: brown;
+        }
+        
+        .create:hover {
+            box-shadow: 2px 2px 2px #000000;
+        }
+        
+        .btn-group-sm>.btn,
+        .btn-sm {
+            line-height: 1.2;
+        }
+        
+        .BackGroundBlue{
+            background-color: #41C8D1;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .loadingAnimation {
+            text-align: center;
+            opacity: 1;
+            animation: fade .10s infinite;
+        }
+        
+        @keyframes fade {
+            0%,
+            100% {
+                opacity: 0
+            }
+            50% {
+                opacity: 1
+            }
+        }
+        
+        .lblField {
+            float: left;
+            width: 100px;
+            margin-right: 25px;
+        }
+        
+        .ipField {
+            float: left;
+            width: 200px;
+            margin-bottom: 10px;
+        }
+        
+        .ipContainer {
+            width: 350px;
+        }
+        
+        .ipBtn {
+            float: left;
+            margin: 0 20px;
+        }
